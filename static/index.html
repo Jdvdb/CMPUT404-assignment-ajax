@@ -23,6 +23,14 @@
     <script src="json2.js"></script>
   </head> 
   <body bgcolor="black" height="100%" width="100%"> 
+    <button onclick="changeColour('red')">Red</button>
+    <button onclick="changeColour('orange')">Orange</button>
+    <button onclick="changeColour('green')">Green</button>
+    <button onclick="changeColour('blue')">Blue</button>
+    <button onclick="changeColour('indigo')">Indigo</button>
+    <button onclick="changeColour('violet')">Violet</button>
+    <button onclick="changeColour('white')">White</button>
+    <p id="colour" style="color: white">Current Colour: white</p>
     <canvas id="c" width="100%" height="100%" style="-webkit-tap-highlight-color: transparent;"></canvas> 
     <script>
 var canvas = document.getElementById('c');
@@ -31,6 +39,12 @@ var context = canvas.getContext("2d");
 var W = canvas.width  = window.innerWidth-6;
 var H = canvas.height = window.innerHeight-50;
 
+var currentColour = 'white'
+
+function changeColour(newColour) {
+    currentColour = newColour
+    document.getElementById("colour").innerHTML = 'Current Colour: ' + currentColour
+}
 
 function sendJSONXMLHTTPRequest(url, objects, callback) {
     var xhr = new XMLHttpRequest();
@@ -60,6 +74,7 @@ function sendJSONXMLHTTPRequest(url, objects, callback) {
     if (objects !== '') {
         xhr.send(JSON.stringify(objects))
     } else {
+        // GET from world, not POST
         xhr.send()
     }
 }
@@ -71,23 +86,23 @@ world = {};
 function drawCircle(context,entity) {
     with(context) {
         beginPath();              
-        lineWidth = 3;
+        lineWidth = 10;
         var x = entity["x"];
         var y = entity["y"];
         //moveTo(x,y);
         fillStyle = entity["colour"];
         strokeStyle = fillStyle;
-        arc(x, y, (entity["radius"])?entity["radius"]:50, 0, 2.0 * Math.PI, false);  
+        arc(x, y, (entity["radius"])?entity["radius"]:5, 0, 2.0 * Math.PI, false);  
         stroke();                                
     }
 }
 
 function prepEntity(entity) {
     if (!entity["colour"]) {
-        entity["colour"] = "#FF0000";
+        entity["colour"] = currentColour;
     }
     if (!entity["radius"]) {
-        entity["radius"] = 50;
+        entity["radius"] = 5;
     }
     return entity;
 }
@@ -159,7 +174,7 @@ function addEntity(entity, data) {
 var counter = 0;
 function addEntityWithoutName(data) {
     //var name = "X"+Math.floor((Math.random()*100)+1);
-    var name = "X"+(counter++)%100;
+    var name = "X"+(counter++)%500;
     addEntity(name,data);
 }
 
@@ -262,16 +277,16 @@ mouse = (function() {
 // Add the application specific mouse listeners!
 //XXX: TODO Make these prettier!
 mouse.mousedowners.push(function(x,y,clicked,e) {
-    addEntityWithoutName({'x':x,'y':y,'colour':'blue'});
+    addEntityWithoutName({'x':x,'y':y,'colour':currentColour});
 });
 
 mouse.mouseuppers.push(function(x,y,clicked,e) {
-    addEntityWithoutName({'x':x,'y':y,'colour':'red'});
+    addEntityWithoutName({'x':x,'y':y,'colour':currentColour});
 });
 
 mouse.mousedraggers.push(function(x,y,clicked,e) {
-    addEntityWithoutName({'x':x,'y':y,'colour':'green',
-                          'radius':10});
+    addEntityWithoutName({'x':x,'y':y,'colour':currentColour,
+                          'radius':5});
 });
 
 

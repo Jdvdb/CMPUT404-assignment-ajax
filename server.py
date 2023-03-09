@@ -22,7 +22,7 @@
 
 
 import flask
-from flask import Flask, request, redirect, jsonify
+from flask import Flask, request, redirect
 import json
 app = Flask(__name__)
 app.debug = True
@@ -94,7 +94,7 @@ def world():
 @app.route("/entity/<entity>")    
 def get_entity(entity):
     '''This is the GET version of the entity interface, return a representation of the entity'''
-    return myWorld.get(entity)
+    return json.dumps(myWorld.get(entity))
 
 @app.route("/clear", methods=['POST','GET'])
 def clear():
@@ -103,4 +103,4 @@ def clear():
     return json.dumps(myWorld.world())
 
 if __name__ == "__main__":
-    app.run(port=8000)
+    app.run()
